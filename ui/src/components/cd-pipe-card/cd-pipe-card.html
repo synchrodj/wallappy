@@ -1,0 +1,60 @@
+<div>
+    <el-card class="box-card pipeline" v-for="pipe in cdPipes">
+        <div slot="header" class="card-header">
+            <div class="icon">
+                <icon scale="3" name="tasks"></icon>
+            </div>
+            <div class="header-content">
+                <div class="description">CD pipeline</div>
+                <div class="value">{{pipe.name}} / {{app}}</div>
+            </div>
+        </div>
+        
+        <div class="envs-pipe">
+            <div>
+                <ul v-if="pipe.envs">
+                    <li class="env-pipe-li" v-for="(env, index) in pipe.envs">
+                        <div class="env-connection" v-if="env.requiresAuth">
+                            <!-- Bug: Popover references don't work within v-if so it's needed an inline definition -->
+                            <el-popover
+                                placement="bottom-start"
+                                title="Auth"
+                                width="200"
+                                trigger="hover">
+                                <div class="env-connector-icon-auth" slot="reference">
+                                    <icon style="color: rgb(165, 165, 165);" name="lock"/>
+                                </div>
+
+                                <div>
+                                    <p>{{env.authInfo.message}}</p>
+                                </div>
+                            </el-popover>
+                            <div class="env-connector"></div>
+                        </div>
+                        
+                        <div class="env-pipe">
+                            <div class="env-header">
+                                <span class="env-icon">
+                                    <icon name="cloud" v-if="env.status === 'success'"  scale="2"></icon>
+                                    <icon v-if="env.status === 'error'" name="exclamation" class="alert" scale="2"></icon>
+                                    <icon v-if="env.status === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
+                                </span>
+                                <br/>
+                                <span class="env-version"> {{env.version}} </span>
+                            </div>
+                            <div class="env-info">
+                                {{env.name}}
+                            </div>
+                        </div>
+                        <div class="env-connection" v-if="(pipe.envs.length-1)>index">
+                            <div class="env-connector-icon">
+                                <icon style="background-color: white" name="chevron-circle-right"/>
+                            </div>
+                            <div class="env-connector"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </el-card>
+</div>

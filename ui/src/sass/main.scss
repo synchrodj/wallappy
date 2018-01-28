@@ -1,0 +1,39 @@
+html, body, #app-main {
+    height: 100%;
+    font-family: 'Inconsolata', monospace;
+}
+
+body {
+    margin: 0px;
+    
+}
+
+.container {
+    margin-top: 0;
+    margin-left: 100px;
+}
+
+.el-card {
+    margin-bottom: 20px;
+}
+
+.app-name, h1 {
+    margin-top: 0px;
+    font-size: 20px;
+    font-weight: normal;
+    color: #565759;
+}
+
+.app-name, h1, .card-header, .header-description {
+    font-family: 'Exo 2', sans-serif;
+}
+
+a {
+    color: #868992;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #6b6f75;
+    text-decoration: underline;
+}

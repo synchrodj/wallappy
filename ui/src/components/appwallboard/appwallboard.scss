@@ -1,0 +1,63 @@
+.el-card__header {
+    color: white;
+    padding: 10px;
+}
+
+.failed .el-card__header {
+    background-color: rgb(217, 83, 79);
+}
+
+.success .el-card__header {
+    background-color: rgb(92, 184, 92);
+}
+
+.pipeline .el-card__header {
+    background-color: rgb(51, 122, 183);
+}
+
+.icon {
+    width: 70px;
+    float: left;
+}
+
+.header-content {
+    margin-left: 70px;
+}
+
+.description {
+    font-size: 12px;
+}
+
+.value {
+    font-size: 30px;
+}
+
+
+.el-table td, .el-table th {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.deployment-info {
+    text-align: right;
+}
+
+.app-summary {
+    margin-bottom: 10px;
+}
+
+.deployments-summary {
+    padding: 5px;
+    color: #606266;
+}
+
+.summary-pipe-name {
+    border-radius: 3px;
+    background-image: linear-gradient(-180deg, rgb(107, 107, 107), rgb(36, 36, 36));
+    
+    padding: 3px 9px 3px 9px;
+    display: inline;
+
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+}

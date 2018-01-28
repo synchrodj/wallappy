@@ -1,0 +1,10 @@
+<div class="container content">
+    <h1>Pods</h1>
+        <el-select v-model="podId" placeholder="Select">
+            <el-option v-for="pod in pods"
+                :key="pod.id"
+                :label="pod.id"
+                :value="pod.id">
+      </el-option>
+    </el-select>
+</div>

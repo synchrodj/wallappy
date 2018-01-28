@@ -1,0 +1,40 @@
+<div>
+        <el-card :class="'box-card  ' + lastBuildInfo.status">
+            <div slot="header" class="card-header">
+                <div class="icon">
+                    <icon scale="3" name="cog"></icon>
+                </div>
+                <div class="header-content">
+                    <div class="description">{{app}} lastest build</div>
+                    <div class="value">{{ lastBuildInfo.version }}</div>
+                </div>
+            </div>
+
+            <el-table :show-header="false" :data="lastBuildInfo.changeset.changes" style="width: 100%">
+                <el-table-column width="100px">
+                    <template slot-scope="scope">
+                        <div class="changeset-info">
+                            <div class="author">
+                                <!-- img class="avatar" :src="scope.row.profileAvatarUri"></img -->
+                                <el-tooltip effect="dark" :content="scope.row.author" placement="right">
+                                    <img class="avatar" src="/assets/img/user-generic.png"></img>
+                                </el-tooltip>
+                            </div>
+                            <div class="changeset-id">
+                                <a :href="scope.row.changesetUrl" target="blank">{{scope.row.displayId}}</a>
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column>
+                    <template slot-scope="scope">
+                        <div class="changeset-body">
+                            <icon v-if="scope.row.type === 'code'" name="code" scale="2"></icon>
+                            <icon v-if="scope.row.type === 'build'" name="cogs" scale="2"></icon> 
+                            <span v-html="scope.row.description"></span>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+    </div>

@@ -1,0 +1,47 @@
+.home-button {
+    padding: 5px;
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+
+.logo {
+    margin-right: 0px;
+    height: 22px;
+}
+
+.app-name {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+.el-menu-item {
+    font-family: 'Inconsolata', monospace;
+    height: 65px;
+    text-align: center;
+    padding-top: 2px;
+}
+
+.el-menu-vertical {
+    height: 100%;
+}
+
+.el-menu-item.is-active {
+    color: rgb(255, 255, 255);
+}
+
+.el-menu-item {
+    color: rgb(187, 187, 187);
+}
+
+
+.menu {
+    height: 100%;
+    position: fixed;
+    width: 65px;
+    
+}
+

@@ -1,0 +1,19 @@
+<div class="menu">
+    <el-menu :default-active="activeIndex" class="el-menu-vertical" @select="handleSelect"
+        background-color="#464646">
+
+        <div class="home-button">
+            <div class="logo"><img src="/assets/img/logob3.svg" width="35px" /></div>
+            <div class="app-name">wallappy</div>
+        </div>
+
+
+        <el-tooltip effect="dark" :content="link.name" placement="right" 
+            :open-delay="1000" popper-class="menu-tooltip" :visible-arrow="false"
+            v-for="(link, index) in links" :key="'navLink' + String(index)">
+            <el-menu-item :index="String(index)" >
+                <icon :name="link.icon" scale="1.4"></icon>
+            </el-menu-item>
+        </el-tooltip>
+    </el-menu>
+</div>

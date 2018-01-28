@@ -1,0 +1,28 @@
+<div class="container content">
+    <el-row :gutter="10">
+        <h1><small>{{$route.params.pod}}</small> / <strong>{{appInfo.name}} ({{$route.params.appid}})</strong></h1>
+        <div class="app-summary">
+            <div class="deployments-summary" v-for="deployment in appInfo.deployments">
+                <span class="summary-pipe-name">{{deployment.pipeName}}</span>
+                <span style="margin-right: 5px" v-for="env in deployment.envs" :key="env.name"><env :name="env.name"></env></span>&nbsp;
+                
+            </div>
+
+            
+
+        </div>
+    </el-row>
+    <el-row :gutter="10">
+        <el-col :span="8">
+            <build-card :app="$route.params.appid"></build-card>
+        </el-col>
+        <el-col :span="4">
+            <deployment-card :app="$route.params.appid"></deployment-card>
+        </el-col>
+    </el-row>
+    <el-row :gutter="10">
+        <el-col :span="12">
+            <cd-pipe-card :app="$route.params.appid"></cd-pipe-card>
+        </el-col>
+    </el-row>
+</div>

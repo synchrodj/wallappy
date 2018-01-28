@@ -1,0 +1,13 @@
+.DS_Store
+**/node_modules
+**/dist/
+coverage/
+*.log
+typings*
+**/*.pyc
+**/*.pyc
+**/*.css
+**/.vscode
+config
+wallappy.egg-info
+static
