@@ -11,3 +11,7 @@ class CIClient(object):
     @abstractmethod
     def get_deployments(self): 
         raise NotImplementedError()
+
+    #@abstractmethod
+    #def get_deployment(self): 
+    #    raise NotImplementedError()

@@ -39,10 +39,11 @@ export class DeploymentsComponent extends Vue {
         }
 
         let fiteredRows = [];
+        let filter: string = this.filter.toLowerCase().trim();
         for (let deployment of this.deployments) {
-            if (deployment.name.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
-                || deployment.deploymentKey.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1
-                || deployment.buildKey.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1) {
+            if (deployment.name.toLowerCase().indexOf(filter) !== -1
+                || deployment.deploymentKey.toLowerCase().indexOf(filter) !== -1
+                || deployment.buildKey.toLowerCase().indexOf(filter) !== -1) {
                 
                 fiteredRows.push(deployment);
             }

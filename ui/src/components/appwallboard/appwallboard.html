@@ -1,15 +1,11 @@
 <div class="container content">
     <el-row :gutter="10">
-        <h1><small>{{$route.params.pod}}</small> / <strong>{{appInfo.name}} ({{$route.params.appid}})</strong></h1>
+        <h1><strong>{{appInfo.name}} </strong> <small>/ {{$route.params.appid}}</small></h1>
         <div class="app-summary">
             <div class="deployments-summary" v-for="deployment in appInfo.deployments">
                 <span class="summary-pipe-name">{{deployment.pipeName}}</span>
                 <span style="margin-right: 5px" v-for="env in deployment.envs" :key="env.name"><env :name="env.name"></env></span>&nbsp;
-                
             </div>
-
-            
-
         </div>
     </el-row>
     <el-row :gutter="10">

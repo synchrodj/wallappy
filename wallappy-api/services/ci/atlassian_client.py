@@ -30,11 +30,20 @@ class AtlassianClient(CIClient):
                 'deploymentKey': deployment_result.deploymentProject.key.key,
                 'deploymentUrl': self.get_deployment_url(deployment_result.deploymentProject.key.key),
                 'buildKey': deployment_result.deploymentProject.planKey.key,
-                'buildUrl': self.get_build_url(deployment_result.deploymentProject.planKey.key)
+                'buildUrl': self.get_build_url(deployment_result.deploymentProject.planKey.key),
+                'envs': self.get_deployment_envs(deployment_result)
             }
             deployments.append(deployment)
 
         return deployments
+
+    def get_deployment_envs(self, deployment): 
+        envs = []
+        for environment_status in deployment.environmentStatuses:
+            envs.append(environment_status.environment.name)
+        return envs
+            
+            
 
     def get_latest_build(self, app_id): 
         latest_build_key =  self.get_latest_build_key(app_id)
