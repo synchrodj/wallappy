@@ -42,8 +42,6 @@ class AtlassianClient(CIClient):
         for environment_status in deployment.environmentStatuses:
             envs.append(environment_status.environment.name)
         return envs
-            
-            
 
     def get_latest_build(self, app_id): 
         latest_build_key =  self.get_latest_build_key(app_id)
@@ -120,3 +118,8 @@ class AtlassianClient(CIClient):
 
     def get_build_url(self, buildKey):
         return app_config.get_ci_uri() + "/browse/" + buildKey
+
+    def get_deployment(self, deployment_id): 
+        path = 'latest/deploy/dashboard/{}'.format(deployment_id)
+        deployment_info = self.bambooClient.get(path);
+        return self.marshallObject(deployment_info)

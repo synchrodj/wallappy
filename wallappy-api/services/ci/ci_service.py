@@ -22,10 +22,12 @@ class CiService(object):
 
         return self.cached_deployments
 
-    def get_deployment_summary(self, buildKey):
+    def get_deployment_summary(self, build_key):
         deployments = self.get_deployments()
         for deployment in deployments:
-            if deployment['buildKey'] == buildKey:
+            if deployment['buildKey'] == build_key:
                 return deployment
-
         return {}
+
+    def get_deployment(self, deployment_id):
+        return self._ci_client.get_deployment(deployment_id)
