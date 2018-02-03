@@ -1,6 +1,9 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import './deployment-card.scss';
 import { Logger } from '../../util/log';
+import http from '../../services/http';
+
+import './deployment-card.scss';
+
 
 @Component({
     template: require('./deployment-card.html')
@@ -8,23 +11,54 @@ import { Logger } from '../../util/log';
 export class DeploymentCard extends Vue {
     protected logger: Logger;
 
-    lastDeploymentsData: any = {};
+    lastDeploymentsData: any = null;
     
     @Prop()
-    app: string;
+    appInfo: any;
+
+    get app() {
+        return this.appInfo.name;
+    }
+
+    constructor() {
+        super();
+        this.logger = new Logger();
+    }
 
     mounted() {
+        console.log('Mounted!!');
         this.getLastDeploymentInfo();
     }
 
     get lastDeploymentsInfo() {
+        this.getLastDeploymentInfo();
         return this.lastDeploymentsData;
     }
 
 
     // To be queried from backend
     getLastDeploymentInfo() {
-        this.lastDeploymentsData = [
+        if (this.appInfo && this.appInfo.deploymentKey) {
+            // It doesn't work, get deployment id from 
+            console.log('------------------------------');
+            console.log(this.appInfo.deploymentKey);
+            
+            let url = `/api/deployments/${this.appInfo.deploymentKey}`;
+            http.get(url)
+            .then((response) => {
+                this.buildLastDeploymentData(response.data);
+            }, (error) => {
+                console.error(error);
+            });
+        }
+    }
+    
+    private buildLastDeploymentData(deploymentInfo): void {
+        console.log(deploymentInfo);
+        // Build from backend and frontend
+    }
+
+        /* this.lastDeploymentsData = [
             {
                 version: '3.122',
                 status: 'failed',
@@ -67,6 +101,6 @@ export class DeploymentCard extends Vue {
                     }
                 ]
             }
-        ];
-    }
+        ];*/
+    
 }

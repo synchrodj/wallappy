@@ -1,31 +1,23 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import './deployments.scss';
 import { Logger } from '../../util/log';
-import axios, { AxiosResponse } from 'axios';
-
+import http from '../../services/http';
 
 @Component({
     template: require('./deployments.html')
 })
 export class DeploymentsComponent extends Vue {
     protected logger: Logger;
-
-    private axios;
-
-    constructor() {
-        super();
-        this.axios = axios;
-    }
-
+    
     public filter = '';
 
     public deployments = [];
     
-    private url = 'http://localhost:5000/api/deployments';
+    private url = '/api/deployments';
     
     created() {
-        this.axios.get(this.url)
-            .then((response: AxiosResponse) => {
+        http.get(this.url)
+            .then((response) => {
                 this.deployments = response.data;
                 console.log(this.deployments);
             }, (error) => {

@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Logger } from '../../util/log';
-import axios, { AxiosResponse } from 'axios';
 import './appwallboard.scss';
+import http from '../../services/http';
 
 @Component({
     template: require('./appwallboard.html')
@@ -10,19 +10,12 @@ export class AppWallboardComponent extends Vue {
 
     protected logger: Logger;
 
-    private axios;
-
-    constructor() {
-        super();
-        this.axios = axios;
-    }
-
     deploymentInfo = null;
     
     created() {
-        let url = `http://localhost:5000/api/deployments?buildKey=${this.$route.params.appid}`;
-        this.axios.get(url)
-            .then((response: AxiosResponse) => {
+        let path = `/api/deployments?buildKey=${this.$route.params.appid}`;
+        http.get(path)
+            .then((response) => {
                 this.deploymentInfo = response.data;
                 console.log(this.deploymentInfo);
             }, (error) => {
@@ -44,8 +37,17 @@ export class AppWallboardComponent extends Vue {
         if (this.deploymentInfo !== null) {
             appInfo = JSON.parse(JSON.stringify(this.deploymentInfo));
             appInfo['deployments'] = this.buildDeploymentPipes(this.deploymentInfo);
+
         }
         return appInfo;
+    }
+
+    public get deploymentId(): string {
+        if (this.deploymentInfo !== null) {
+            console.log('returned ' + this.deploymentInfo.deploymentKey);
+            return this.deploymentInfo.deploymentKey;
+        }
+        return null;
     }
 
     private buildDeploymentPipes(deploymentInfo: any): any {

@@ -1,5 +1,5 @@
 <div>    
-    <div v-for="lastDeploymentInfo in lastDeploymentsInfo">
+    <div v-if="lastDeploymentsInfo !== null" v-for="lastDeploymentInfo in lastDeploymentsInfo">
         <el-card :class="'box-card  ' + lastDeploymentInfo.status">
             <div slot="header" class="card-header">
                 <div class="icon">

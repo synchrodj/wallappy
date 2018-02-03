@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import axios, { AxiosResponse } from 'axios';
+import http from '../../services/http';
 
 interface Pod {
     id: string;
@@ -13,15 +13,9 @@ interface Pod {
 export class PodsComponent extends Vue {
 
     pods: Pod[] = [];
-    // private url = 'http://localhost:5000/api/pods';
-    private url = '/api/pods';
-    protected axios;
-    podId: string = '';
+    private path = '/api/pods';
 
-    constructor() {
-      super();
-      this.axios = axios;
-    }
+    podId: string = '';
 
     mounted() {
         this.$nextTick(() => {
@@ -31,7 +25,7 @@ export class PodsComponent extends Vue {
 
     private loadItems() {
         if (!this.pods.length) {
-            this.axios.get(this.url).then((response: AxiosResponse) => {
+            http.get(this.path).then((response) => {
                 this.pods = response.data;
             }, (error) => {
                 console.error(error);

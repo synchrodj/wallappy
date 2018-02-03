@@ -13,7 +13,7 @@
             <build-card :app="$route.params.appid"></build-card>
         </el-col>
         <el-col :span="4">
-            <deployment-card :app="$route.params.appid"></deployment-card>
+            <deployment-card :appInfo="appInfo"></deployment-card>
         </el-col>
     </el-row>
     <el-row :gutter="10">

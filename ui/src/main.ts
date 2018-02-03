@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import axios from 'axios';
 import VueRouter from 'vue-router';
 import { makeHot, reload } from './util/hot-reload';
 import { createRouter } from './router';
@@ -34,14 +33,14 @@ Vue.component('build-card', BuildCard);
 import { CDPipeCard } from './components/cd-pipe-card/cd-pipe-card';
 Vue.component('cd-pipe-card', CDPipeCard);
 
-
-
 new Vue({
-  el: '#app-main',
-  router: createRouter(),
-  components: {
-    'navbar': navbarComponent
-  },
-  store: store
-  
+    el: '#app-main',
+    router: createRouter(),
+    components: {
+        'navbar': navbarComponent
+    },
+    store: store,
+    created () {
+        this.$store.dispatch('getDeploymentsConfig');
+    }
 });

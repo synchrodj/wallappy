@@ -42,9 +42,6 @@ export class Env extends Vue {
             this.type = 'prod';
             this.style = 'production';
         }
-
-        console.log('Env set to ' + this.type);
-        console.log('Style set  to ' + this.type);
     }
 
     get computedStyleClass() {

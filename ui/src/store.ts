@@ -1,56 +1,30 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import http from './services/http';
 
 Vue.use(Vuex);
 
-const state = {
-    envs: [
-      {
-        name: 'Development',
-        type: 'development',
-        shortType: 'dev'
-      },
-      {
-        name: 'Integration',
-        type: 'integration',
-        shortType: 'int'
-      },
-      {
-        name: 'Performance',
-        type: 'performance',
-        shortType: 'perf'
-      },
-      {
-        name: 'Production',
-        type: 'production',
-        shortType: 'prod'
-      },
-      {
-        name: 'DEV',
-        type: 'development',
-        shortType: 'dev'
-      },
-      {
-        name: 'INT',
-        type: 'integration',
-        shortType: 'int'
-      },
-      {
-        name: 'PROD',
-        type: 'production',
-        shortType: 'prod'
-      },
-
-    ],
-    profileResolver: {
-      type: 'confluence'
-    },
-    cdResolver: {
-      type: 'bamboo',
-      applicationPath: 'https://bamboo.env/{APP_NAME}'
-    }
-};
+const UPDATE_DEPLOYMENTS = 'UPDATE_DEPLOYMENTS';
 
 export default new Vuex.Store({
-    state: state
+    state: {
+        deployments: {}
+    },
+    mutations: {
+        [UPDATE_DEPLOYMENTS] (state, deployments) {
+            state.deployments = deployments;
+            console.log('State update ' + UPDATE_DEPLOYMENTS + deployments); 
+        }
+    },
+    getters: {
+        deployments (state) {
+            return state.deployments;
+        }
+    },
+    actions: {
+        getDeploymentsConfig ({commit}) {
+            return http.get('/api/config/deployments')
+                .then((response) => commit(UPDATE_DEPLOYMENTS, response.data));
+        }
+    }
 });
