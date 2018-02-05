@@ -1,16 +1,16 @@
 <div>    
-    <div v-if="lastDeploymentsInfo !== null" v-for="lastDeploymentInfo in lastDeploymentsInfo">
-        <el-card :class="'box-card  ' + lastDeploymentInfo.status">
+    <div v-if="currentDeploymentsStatus.length>0" v-for="deploymentsPipe in currentDeploymentsStatus">
+        <el-card :class="'box-card  ' + deploymentsPipe.state">
             <div slot="header" class="card-header">
                 <div class="icon">
                     <icon scale="3" name="cloud-upload"></icon>
                 </div>
                 <div class="header-content">
-                    <div class="description">{{lastDeploymentInfo.pipeName}} / {{app}}</div>
-                    <div class="value">{{ lastDeploymentInfo.version }}</div>
+                    <div class="description">{{deploymentsPipe.name}} / {{appInfo.name}}</div>
+                    <div class="value">{{ deploymentsPipe.version }}</div>
                 </div>
             </div>
-            <el-table :show-header="false" :data="lastDeploymentInfo.envs" style="width: 100%">
+            <el-table v-if="deploymentsPipe.envs.length > 0" :show-header="false" :data="deploymentsPipe.envs" style="width: 100%">
                 <el-table-column>
                     <template slot-scope="scope">
                         {{scope.row.name}}
@@ -20,17 +20,26 @@
                 <el-table-column width="80px">
                     <template slot-scope="scope">
                         <div class="deployment-info">
-                            <icon v-if="scope.row.status === 'success'" name="check-circle"></icon>
-                            <icon v-if="scope.row.status === 'error'" name="times-circle"></icon>
-                            <icon v-if="scope.row.status === 'deploying'" name="circle-o-notch" spin></icon>
-                            <el-tooltip v-if="scope.row.status === 'success' || scope.row.status === 'error'" class="item" effect="dark" content="Test results" placement="right">
+                            <icon v-if="scope.row.state === 'success'" name="check-circle"></icon>
+                            <icon v-if="scope.row.state === 'error'" name="times-circle"></icon>
+                            <icon v-if="scope.row.state === 'deploying'" name="circle-o-notch" spin></icon>
+                            <el-tooltip v-if="scope.row.state === 'success' || scope.row.state === 'error'" class="item" effect="dark" content="Test results" placement="right">
                                 <icon name="list"></icon>
                             </el-tooltip>
-                            <icon name="ban" v-if="scope.row.status === 'na'" class="alert"></icon>
+                            
+                            <icon name="ban" v-if="scope.row.state === 'na'" class="alert"></icon>
                         </div>
                     </template>
                 </el-table-column>
             </el-table>
+
+            <div class="env-outdated"  v-if="deploymentsPipe.envs.length == 0">
+                <icon name="exclamation-triangle" scale="1"></icon>
+                <span>Env outdated</span>
+            </div>
+
+            
+            
         </el-card>
     </div>
 </div>

@@ -11,96 +11,54 @@ import './deployment-card.scss';
 export class DeploymentCard extends Vue {
     protected logger: Logger;
 
-    lastDeploymentsData: any = null;
-    
     @Prop()
     appInfo: any;
 
-    get app() {
-        return this.appInfo.name;
-    }
+    @Prop()
+    lastDeploymentsInfo: Array<any>;
+
+    @Prop()
+    lastBuildInfo;
+
+    public currentVersionDeploymentsStatus: Array<any> = [];
 
     constructor() {
         super();
         this.logger = new Logger();
     }
 
-    mounted() {
-        console.log('Mounted!!');
-        this.getLastDeploymentInfo();
+    get currentDeploymentsStatus() {
+        return this.getCurrentVersionDeploymentsStatus(this.lastBuildInfo, this.lastDeploymentsInfo);
     }
 
-    get lastDeploymentsInfo() {
-        this.getLastDeploymentInfo();
-        return this.lastDeploymentsData;
-    }
+    private getCurrentVersionDeploymentsStatus(lastBuildInfo, lastDeploymentsInfo) {
+        this.logger.info('Getting deployments!');
+        let deployments = [];
 
-
-    // To be queried from backend
-    getLastDeploymentInfo() {
-        if (this.appInfo && this.appInfo.deploymentKey) {
-            // It doesn't work, get deployment id from 
-            console.log('------------------------------');
-            console.log(this.appInfo.deploymentKey);
-            
-            let url = `/api/deployments/${this.appInfo.deploymentKey}`;
-            http.get(url)
-            .then((response) => {
-                this.buildLastDeploymentData(response.data);
-            }, (error) => {
-                console.error(error);
-            });
+        if (lastBuildInfo && lastDeploymentsInfo) {
+            let latestState: string = '';
+            for (let deploymentPipe of lastDeploymentsInfo) {
+                let currentPipe = {
+                    'name': deploymentPipe.name,
+                    'envs': [],
+                    'state': 'unknown',
+                    'version': '#'
+                };
+                let lastDeploymentState = 'unknown';
+                for (let env of deploymentPipe.envs) {
+                    // Setting pipe status to last env status
+                    if (env.version.indexOf(lastBuildInfo.version) !== -1) {
+                        currentPipe.envs.push(env);
+                        currentPipe.state = env.state;
+                        currentPipe.version = env.version;
+                    }
+                }
+    
+                deployments.push(currentPipe);
+            }   
         }
+        
+        console.log(JSON.stringify(deployments));
+        return deployments;
     }
-    
-    private buildLastDeploymentData(deploymentInfo): void {
-        console.log(deploymentInfo);
-        // Build from backend and frontend
-    }
-
-        /* this.lastDeploymentsData = [
-            {
-                version: '3.122',
-                status: 'failed',
-                pipeName: 'pipe001',
-                envs: [
-                    {
-                        name: 'Development',
-                        status: 'success'
-                    },
-                    {
-                        name: 'Integration',
-                        status: 'error'
-                    },
-                    {
-                        name: 'Performance',
-                        status: 'deploying'
-                    },
-                    {
-                        name: 'Production',
-                        status: 'na'
-                    }
-                ]
-            },
-            {
-                version: '3.122',
-                status: 'success',
-                pipeName: 'pipe002',
-                envs: [
-                    {
-                        name: 'Development',
-                        status: 'success'
-                    },
-                    {
-                        name: 'Integration',
-                        status: 'error'
-                    },
-                    {
-                        name: 'Production',
-                        status: 'na'
-                    }
-                ]
-            }
-        ];*/
-    
 }

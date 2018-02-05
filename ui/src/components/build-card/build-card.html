@@ -1,22 +1,21 @@
 <div>
-        <el-card :class="'box-card  ' + lastBuildInfo.status">
+        <el-card v-if="lastBuildInfo" :class="'box-card  ' + lastBuildInfo.state">
             <div slot="header" class="card-header">
                 <div class="icon">
                     <icon scale="3" name="cog"></icon>
                 </div>
                 <div class="header-content">
-                    <div class="description">{{app}} lastest build</div>
+                    <div class="description">{{appInfo.name}} lastest build</div>
                     <div class="value">{{ lastBuildInfo.version }}</div>
                 </div>
             </div>
 
-            <el-table :show-header="false" :data="lastBuildInfo.changeset.changes" style="width: 100%">
+            <el-table :show-header="false" :v-if="lastBuildInfo.changeset" :data="lastBuildInfo.changeset.changes" style="width: 100%">
                 <el-table-column width="100px">
                     <template slot-scope="scope">
                         <div class="changeset-info">
                             <div class="author">
-                                <!-- img class="avatar" :src="scope.row.profileAvatarUri"></img -->
-                                <el-tooltip effect="dark" :content="scope.row.author" placement="right">
+                                <el-tooltip :content="scope.row.author" placement="right">
                                     <img class="avatar" src="/assets/img/user-generic.png"></img>
                                 </el-tooltip>
                             </div>

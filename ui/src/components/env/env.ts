@@ -11,49 +11,51 @@ export class Env extends Vue {
     @Prop()
     name: string;
 
-    type: string = 'env';
+    @Prop()
+    type: string;
 
     style: string = 'env';
 
-    configEnvType(envs: any): void {
-        for (let env of envs) {
-            console.log(env);
-            if (this.$props.name === env.name) {
-                this.type = env.shortType;
-                this.style = env.type;
-            }
-        }
-    }
-
     private setType(envName) {
         if (envName.toLowerCase().indexOf('dev') !== -1) {
-            this.type = 'dev';
-            this.style = 'development';
+            this.type = 'development';
         } else if (envName.toLowerCase().indexOf('int') !== -1) {
-            this.type = 'int';
-            this.style = 'integration';
+            this.type = 'integration';
         } else if (envName.toLowerCase().indexOf('uat') !== -1) {
             this.type = 'uat';
-            this.style = 'uat';
         } else if (envName.toLowerCase().indexOf('load') !== -1) {
-            this.type = 'perf';
-            this.style = 'performance';
+            this.type = 'performance';
         } else {
-            this.type = 'prod';
-            this.style = 'production';
+            this.type = 'production';
         }
     }
 
     get computedStyleClass() {
-        return 'type ' + this.style;
+        return 'type ' + this.type;
     }
 
-    mounted() {
+    get shortType(): string {
+        switch (this.type) {
+            case 'development':
+                return 'dev';
+            case 'integration':
+                return 'int';
+            case 'performance':
+                return 'perf';
+            case 'production':
+                return 'prod';
+            default: 
+                return this.type;
+        }
+    }
+
+    crated() {
         if (!this.logger) this.logger = new Logger();
-        console.log('Setting type ' + this.name);
-        this.setType(this.name);
-        // this.configEnvType(this.$store.state.envs);
+        if (!this.type) {
+            this.logger.info('No type set');
+            this.setType(this.name);
+        } else {
+            this.style = this.type;
+        }
     }
-
-
 }

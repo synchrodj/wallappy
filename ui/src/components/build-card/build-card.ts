@@ -11,9 +11,10 @@ export class BuildCard extends Vue {
     protected logger: Logger;
     
     @Prop()
-    app: string;
+    lastBuildInfo;
 
-    latBuildInfoData: any = {};
+    @Prop()
+    appInfo: any;
 
     timerToken: any;
 
@@ -22,31 +23,13 @@ export class BuildCard extends Vue {
         this.logger = new Logger();
     }
 
-    private path = `/api/apps/${this.app}/builds?limit=1`;
-
     created() {
-        this.getLastBuildInfo();
-        this.timerToken = setInterval(() => this.getLastBuildInfo(), 5000);   
-    }
-
-    // Computed
-    get lastBuildInfo() {
-        return this.latBuildInfoData;
+        // this.getLastBuildInfo();
+        // this.timerToken = setInterval(() => this.getLastBuildInfo(), 5000);   
     }
 
     destroyed() {
         this.logger.info('Destroyed!');
-        clearTimeout(this.timerToken);
-    }
-
-    getLastBuildInfo(): any { 
-        this.logger.info('Refreshing build info');
-        http.get(this.path)
-            .then((response) => {
-                this.latBuildInfoData = response.data;
-                console.log(this.latBuildInfoData);
-            }, (error) => {
-                console.error(error);
-            });
+        // clearTimeout(this.timerToken);
     }
 }

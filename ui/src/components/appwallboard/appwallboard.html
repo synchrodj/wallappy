@@ -2,23 +2,23 @@
     <el-row :gutter="10">
         <h1><strong>{{appInfo.name}} </strong> <small>/ {{$route.params.appid}}</small></h1>
         <div class="app-summary">
-            <div class="deployments-summary" v-for="deployment in appInfo.deployments">
-                <span class="summary-pipe-name">{{deployment.pipeName}}</span>
-                <span style="margin-right: 5px" v-for="env in deployment.envs" :key="env.name"><env :name="env.name"></env></span>&nbsp;
+            <div class="deployments-summary" v-for="pipe in appInfo.deploymentPipes">
+                <span class="summary-pipe-name">{{pipe.name}}</span>
+                <span style="margin-right: 5px" v-for="env in pipe.envs" :key="env.name"><env :type="env.type" :name="env.name"></env></span>&nbsp;
             </div>
         </div>
     </el-row>
     <el-row :gutter="10">
         <el-col :span="8">
-            <build-card :app="$route.params.appid"></build-card>
+            <build-card :appInfo="appInfo" :lastBuildInfo="lastBuildInfo"></build-card>
         </el-col>
         <el-col :span="4">
-            <deployment-card :appInfo="appInfo"></deployment-card>
+            <deployment-card :appInfo="appInfo" :lastDeploymentsInfo="lastDeploymentInfo" :lastBuildInfo="lastBuildInfo"></deployment-card>
         </el-col>
     </el-row>
-    <el-row :gutter="10">
+    <!-- el-row :gutter="10">
         <el-col :span="12">
             <cd-pipe-card :app="$route.params.appid"></cd-pipe-card>
         </el-col>
-    </el-row>
+    </el-row-->
 </div>

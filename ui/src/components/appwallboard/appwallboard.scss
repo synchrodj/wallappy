@@ -3,7 +3,7 @@
     padding: 10px;
 }
 
-.failed .el-card__header {
+.error .el-card__header {
     background-color: rgb(217, 83, 79);
 }
 
@@ -13,6 +13,10 @@
 
 .pipeline .el-card__header {
     background-color: rgb(51, 122, 183);
+}
+
+.unknown .el-card__header {
+    background-color: rgb(88, 88, 88);
 }
 
 .icon {
@@ -25,13 +29,13 @@
 }
 
 .description {
+    padding-top: 2px;
     font-size: 12px;
 }
 
 .value {
-    font-size: 30px;
+    font-size: 22px;
 }
-
 
 .el-table td, .el-table th {
     padding-top: 6px;

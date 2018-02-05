@@ -35,9 +35,9 @@
                         <div class="env-pipe">
                             <div class="env-header">
                                 <span class="env-icon">
-                                    <icon name="cloud" v-if="env.status === 'success'"  scale="2"></icon>
-                                    <icon v-if="env.status === 'error'" name="exclamation" class="alert" scale="2"></icon>
-                                    <icon v-if="env.status === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
+                                    <icon name="cloud" v-if="env.state === 'success'"  scale="2"></icon>
+                                    <icon v-if="env.state === 'error'" name="exclamation" class="alert" scale="2"></icon>
+                                    <icon v-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
                                 </span>
                                 <br/>
                                 <span class="env-version"> {{env.version}} </span>

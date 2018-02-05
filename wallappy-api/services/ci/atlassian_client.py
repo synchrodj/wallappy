@@ -1,6 +1,8 @@
 from ci_client import CIClient
 from atlassian.baboo_client import BambooClient
 import json
+import re
+
 from config import app_config
 
 IGNORED_REPOSITORIES = ['cd-scripts', 'cd-scripts-trunk']
@@ -23,25 +25,20 @@ class AtlassianClient(CIClient):
         deployments = []
        
         for deployment_result in deployments_results:
-            if not hasattr(deployment_result.deploymentProject, 'planKey'):
+            if not hasattr(deployment_result.deploymentProject, 'planKey') or not hasattr(deployment_result.environmentStatuses[0], 'deploymentResult'):
                 continue
+
             deployment = {
                 'name': deployment_result.deploymentProject.name,
                 'deploymentKey': deployment_result.deploymentProject.key.key,
                 'deploymentUrl': self.get_deployment_url(deployment_result.deploymentProject.key.key),
                 'buildKey': deployment_result.deploymentProject.planKey.key,
                 'buildUrl': self.get_build_url(deployment_result.deploymentProject.planKey.key),
-                'envs': self.get_deployment_envs(deployment_result)
+                'deploymentPipes': self.build_deployment_pipes(deployment_result)
             }
             deployments.append(deployment)
 
         return deployments
-
-    def get_deployment_envs(self, deployment): 
-        envs = []
-        for environment_status in deployment.environmentStatuses:
-            envs.append(environment_status.environment.name)
-        return envs
 
     def get_latest_build(self, app_id): 
         latest_build_key =  self.get_latest_build_key(app_id)
@@ -51,7 +48,7 @@ class AtlassianClient(CIClient):
         
         return {
             'version': latest_build_details.buildNumber,
-            'status': self.get_state(latest_build_details.buildState),
+            'state': self.get_state(latest_build_details.buildState),
             'changeset': self.build_changesets_info(latest_build_details),
             'issues': self.build_issues_info(latest_build_details),
             'sourceInfo': self.marshallObject(latest_build_details)
@@ -109,8 +106,12 @@ class AtlassianClient(CIClient):
         return issues
     
     def get_state(self, state):
-        if state == 'Successful':
+        if re.search('success', state, re.IGNORECASE):
             return 'success'
+        elif re.search('err', state, re.IGNORECASE) or re.search('fail', state, re.IGNORECASE):
+            return 'error'
+        elif re.search('run', state, re.IGNORECASE):
+            return 'running'
         return state
 
     def get_deployment_url(self, deploymentKey):
@@ -121,5 +122,58 @@ class AtlassianClient(CIClient):
 
     def get_deployment(self, deployment_id): 
         path = 'latest/deploy/dashboard/{}'.format(deployment_id)
-        deployment_info = self.bambooClient.get(path);
-        return self.marshallObject(deployment_info)
+        deployment_status = self.bambooClient.get(path);
+        deployment_info = self.build_deployment_pipes(deployment_status[0], add_state=True)
+
+        return deployment_info
+
+    def build_deployment_pipes(self, deployment_result, add_state=None): 
+        pipes = []
+
+        for env_status in deployment_result.environmentStatuses:
+            environment = {
+                "name": env_status.environment.name
+            }
+
+            if hasattr(env_status, 'deploymentResult') and add_state:
+                environment['state'] = self.get_state(env_status.deploymentResult.deploymentState)
+                environment['version'] = env_status.deploymentResult.deploymentVersion.name
+                environment['timestamp'] = env_status.deploymentResult.finishedDate
+
+            self.add_to_pipes(pipes, environment)
+        
+        return pipes
+
+    def add_to_pipes(self, pipes, environment):
+        candidates_pipes = self.eval_pipes(environment)
+        for candidate_pipe_name in candidates_pipes:
+            current_pipe = self.register_pipe(pipes, candidate_pipe_name)
+            current_pipe['envs'].append(environment)
+        
+
+    def register_pipe(self, pipes, pipe_name):
+        current_pipe = None
+
+        for pipe in pipes:
+            if pipe['name'] == pipe_name:
+                current_pipe = pipe
+                break
+        
+        if current_pipe == None:
+            current_pipe = {
+                "name": pipe_name,
+                "envs": []
+            }
+            pipes.append(current_pipe)
+        
+        return current_pipe
+    
+    def eval_pipes(self, environment):
+        pipes = []
+        for pipe_config in app_config.get_deployments_config()['pipes']:
+            for chain in pipe_config['chain']:
+                for env_name in chain['envs']:
+                    if re.search(env_name, environment['name'], re.IGNORECASE): # some flexibility in here
+                        environment['type'] = chain['type'] # probably not the best place to set this information
+                        pipes.append(pipe_config['name'])
+        return pipes
