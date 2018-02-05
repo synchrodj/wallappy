@@ -25,11 +25,9 @@ export class NavbarComponent extends Vue {
     activeIndex: string = '0';
 
    links: Link[] = [
-        new Link('Home', '/', 'home'),
         new Link('Deployments', '/deployments', 'cloud'),
         new Link('Pods', '/pods', 'group'),
-        new Link('Demo', '/wallboard/pods/mypod/apps/myapp', 'chevron-right'),
-        new Link('Admin', '/about', 'gears')
+        new Link('About', '/about', 'info-circle')
      ];
 
     @Watch('$route.path')
@@ -43,10 +41,12 @@ export class NavbarComponent extends Vue {
     }
 
     handleSelect(index) {
-        console.log();
-        this.logger.info('Transition to ' + JSON.stringify(this.links[index]));
-        this.$router.push(this.links[index].path);
-        this.activeIndex = index;
+        if (index == -1) {
+            this.$router.push("/"); 
+        } else {
+            this.$router.push(this.links[index].path);
+            this.activeIndex = index;
+        }
     }
   
 }
