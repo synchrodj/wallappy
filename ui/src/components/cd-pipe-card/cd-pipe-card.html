@@ -1,21 +1,22 @@
 <div>
-    <el-card class="box-card pipeline" v-for="pipe in cdPipes">
+    <el-card v-if="deploymentPipes.length > 0" class="box-card pipeline" v-for="pipe in deploymentPipes">
         <div slot="header" class="card-header">
             <div class="icon">
                 <icon scale="3" name="tasks"></icon>
             </div>
             <div class="header-content">
                 <div class="description">CD pipeline</div>
-                <div class="value">{{pipe.name}} / {{app}}</div>
+                <div class="value">{{pipe.name}} / {{appInfo.name}}</div>
             </div>
         </div>
         
         <div class="envs-pipe">
-            <div>
-                <ul v-if="pipe.envs">
-                    <li class="env-pipe-li" v-for="(env, index) in pipe.envs">
-                        <div class="env-connection" v-if="env.requiresAuth">
-                            <!-- Bug: Popover references don't work within v-if so it's needed an inline definition -->
+            <div-- class="envs-pipe-container">
+                <ul>
+                    <li class="env-pipe-li" v-for="(deployments, index) in pipe.deployments">
+                        
+                        <!-- div class="env-connection" v-if="env.requiresAuth">
+                            <!-- Bug: Popover references don't work within v-if so it's needed an inline definition >
                             <el-popover
                                 placement="bottom-start"
                                 title="Auth"
@@ -30,23 +31,24 @@
                                 </div>
                             </el-popover>
                             <div class="env-connector"></div>
-                        </div>
+                        </div-->
                         
-                        <div class="env-pipe">
-                            <div class="env-header">
-                                <span class="env-icon">
-                                    <icon name="cloud" v-if="env.state === 'success'"  scale="2"></icon>
-                                    <icon v-if="env.state === 'error'" name="exclamation" class="alert" scale="2"></icon>
-                                    <icon v-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
-                                </span>
-                                <br/>
-                                <span class="env-version"> {{env.version}} </span>
-                            </div>
-                            <div class="env-info">
-                                {{env.name}}
+                        <div :class="(deployments.envs.length > 1)? 'env-group' : 'env-cell'">
+                            <div class="env-pipe" v-for="(env, index) in deployments.envs">
+                                <div class="env-header">
+                                    <div class="env-icon">
+                                        <icon name="cloud" v-if="env.state === 'success'"  scale="2"></icon>
+                                        <icon v-if="env.state === 'error'" name="exclamation" class="alert" scale="2"></icon>
+                                        <icon v-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
+                                    </div>
+                                    <div class="env-info">{{env.name}}</div>
+                                    <div class="env-version"> {{env.version}} </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="env-connection" v-if="(pipe.envs.length-1)>index">
+
+                        
+                        <div class="env-connection" v-if="(pipe.deployments.length-1)>index">
                             <div class="env-connector-icon">
                                 <icon style="background-color: white" name="chevron-circle-right"/>
                             </div>

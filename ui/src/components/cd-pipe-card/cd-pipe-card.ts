@@ -10,22 +10,63 @@ export class CDPipeCard extends Vue {
     protected logger: Logger;
 
     @Prop()
-    app: string;
+    appInfo: any;
 
-    cdPipesData: any = [];
+    @Prop()
+    lastDeploymentsInfo: Array<any>;
 
     mounted() {
         if (!this.logger) this.logger = new Logger();
-        this.logger.info('CD pipe card mounted for ' + this.app);
-        this.getCDPipes();
     }
 
-    get cdPipes() {
-        return this.cdPipesData;
+    get deploymentPipes() {
+        return this.buildDeploymentPipes(this.lastDeploymentsInfo);
+    }
+
+    private buildDeploymentPipes(deployments) {
+        console.log('Build deployment pipes');
+        let deploymentPipes = [];
+
+        if (deployments) {
+            for (let deploymentPipe of deployments) {
+                let currentPipe = {
+                    'name': deploymentPipe.name,
+                    'deployments': []
+                };
+    
+                for (let env of deploymentPipe.envs) {
+                    this.appendDeployment(currentPipe, env);
+                } 
+    
+                deploymentPipes.push(currentPipe);
+            }   
+        }
+
+        return deploymentPipes;
+    }
+
+    private appendDeployment(pipe, envDeployment) {
+        let deploymentGroup = null;
+        for (let currentEnvGroup of pipe.deployments) {
+            if (currentEnvGroup.type === envDeployment.type) {
+                deploymentGroup = currentEnvGroup;
+                break;
+            }
+        }
+
+        if (!deploymentGroup) {
+            deploymentGroup = {
+                'type': envDeployment.type,
+                'envs': []
+            };
+            pipe.deployments.push(deploymentGroup);
+        }
+
+        deploymentGroup.envs.push(envDeployment);
     }
 
     getCDPipes() {
-        this.cdPipesData =  [
+        let cdPipesData =  [
             {
                 name: 'pipe001',
                 envs: [
