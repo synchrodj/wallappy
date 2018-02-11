@@ -138,7 +138,8 @@ class AtlassianClient(CIClient):
             if hasattr(env_status, 'deploymentResult') and add_state:
                 environment['state'] = self.get_state(env_status.deploymentResult.deploymentState)
                 environment['version'] = env_status.deploymentResult.deploymentVersion.name
-                environment['timestamp'] = env_status.deploymentResult.finishedDate
+                if hasattr(env_status.deploymentResult, 'finishedDate'):
+                    environment['timestamp'] = env_status.deploymentResult.finishedDate
 
             self.add_to_pipes(pipes, environment)
         
