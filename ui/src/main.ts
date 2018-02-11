@@ -18,9 +18,10 @@ Vue.use(ElementUI);
 import Element from 'element-ui';
 Vue.use(Element);
 
+
+
 import store from './store';
 
-import 'element-ui/lib/theme-chalk/index.css';
 import { Env } from './components/env/env';
 Vue.component('env', Env);
 

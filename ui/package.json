@@ -34,7 +34,7 @@
         "vue-property-decorator": "~6.0.0",
         "vue-router": "~3.0.1",
         "vue-awesome": "2.3.4",
-        "element-ui": "~2.0.9"
+        "element-ui": "~2.1.0"
     },
     "devDependencies": {
         "@types/mocha": "~2.2.44",

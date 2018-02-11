@@ -41,8 +41,8 @@ export class NavbarComponent extends Vue {
     }
 
     handleSelect(index) {
-        if (index == -1) {
-            this.$router.push("/"); 
+        if (index === -1) {
+            this.$router.push('/'); 
         } else {
             this.$router.push(this.links[index].path);
             this.activeIndex = index;
