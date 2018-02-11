@@ -6,7 +6,6 @@ coverage/
 typings*
 **/*.pyc
 **/*.pyc
-**/*.css
 **/.vscode
 config
 wallappy.egg-info
