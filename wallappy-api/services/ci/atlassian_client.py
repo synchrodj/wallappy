@@ -42,10 +42,8 @@ class AtlassianClient(CIClient):
 
     def get_latest_build(self, app_id): 
         latest_build_key =  self.get_latest_build_key(app_id)
-        path = 'latest/result/{}'.format(latest_build_key)
-        params = {'expand': 'vcsRevisions,jiraIssues,changes.change'}
-        latest_build_details = self.bambooClient.get(path, params=params)
-        
+        latest_build_details = self.get_build_details(latest_build_key)
+
         return {
             'version': latest_build_details.buildNumber,
             'state': self.get_state(latest_build_details.buildState),
@@ -53,6 +51,12 @@ class AtlassianClient(CIClient):
             'issues': self.build_issues_info(latest_build_details),
             'sourceInfo': self.marshallObject(latest_build_details)
         }
+
+    def get_build_details(self, build_key):
+        path = 'latest/result/{}'.format(build_key)
+        params = {'expand': 'vcsRevisions,jiraIssues,changes.change'}
+        return self.bambooClient.get(path, params=params)
+
 
     def get_latest_build_key(self, app_id):
         path = 'latest/result/{}'.format(app_id)
@@ -66,16 +70,21 @@ class AtlassianClient(CIClient):
             'changes': self.build_changes(latest_build_details)
         }
 
-    def build_changes(self, latest_build_details): 
+    def build_changes(self, build_details): 
         changes = []
-        for change in latest_build_details.changes.change:
+        for change in build_details.changes.change:
             c = {
                 'id': change.changesetId,
                 'displayId': change.changesetId[:11],
                 'changesetUrl': change.commitUrl,
                 'description': change.comment,
                 'author': change.author,
-                'type': 'code'
+                'type': 'code',
+                'plan': {
+                    'name': build_details.planName,
+                    'link': self.get_build_url(build_details.key)
+                },
+                'date': change.date
             }
 
             if hasattr(c, 'userName'):
@@ -83,7 +92,34 @@ class AtlassianClient(CIClient):
 
             changes.append(c)
 
+        self.build_nested_changes(changes, build_details)
         return changes
+    
+    def get_build_url(self, build_key):
+        return app_config.get_ci_uri() + "/browse/" + build_key;
+
+    def build_nested_changes(self, changes, build_details): 
+        reason = build_details.buildReason
+
+        if reason == "Scheduled":
+            source_build = build_details.buildResultKey
+            c = {
+                'description': "Scheduled from <strong>" + build_details.planName + "</strong>",
+                'author': "bamboo",
+                'type': 'build',
+                'plan': {
+                    'name': build_details.planName,
+                    'link': self.get_build_url(build_details.key)
+                },
+                'date': build_details.buildCompletedDate
+            }
+            changes.append(c)
+        else:
+            match = re.compile(r'\>[\w-]*\<').findall(reason);
+            if len(match)==1:
+                source_build = match[0][1:-1]
+                source_build_details = self.get_build_details(source_build)
+                changes += self.build_changes(source_build_details)
 
     
     """

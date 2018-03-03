@@ -28,9 +28,18 @@
                 <el-table-column>
                     <template slot-scope="scope">
                         <div class="changeset-body">
-                            <icon v-if="scope.row.type === 'code'" name="code" scale="2"></icon>
-                            <icon v-if="scope.row.type === 'build'" name="cogs" scale="2"></icon> 
-                            <span v-html="scope.row.description"></span>
+                            <div class="description"> 
+                                <icon v-if="scope.row.type === 'code'" name="code" scale="2"></icon>
+                                <icon v-if="scope.row.type === 'build'" name="cogs" scale="2"></icon> 
+                                <span v-html="scope.row.description"></span>
+                            </div>
+                            
+                            <div class="changeset-body-info"> 
+                                <div class="plan"> 
+                                    <a :href="scope.row.plan.link" target="blank">{{scope.row.plan.name}}</a>
+                                </div>
+                                <div class="date">{{scope.row.date | formatDate}}</div>
+                            </div>
                         </div>
                     </template>
                 </el-table-column>

@@ -7,3 +7,21 @@
 .changeset-info {
     text-align: center;
 }
+
+.changeset-body .description {
+    font-size: 14px;
+}
+
+.changeset-body-info {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.changeset-body-info .plan {
+    float: left;
+}
+
+.changeset-body-info .date {
+    float:right;
+    text-align: right;
+}

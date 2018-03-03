@@ -18,8 +18,6 @@ Vue.use(ElementUI);
 import Element from 'element-ui';
 Vue.use(Element);
 
-
-
 import store from './store';
 
 import { Env } from './components/env/env';
@@ -33,6 +31,13 @@ Vue.component('build-card', BuildCard);
 
 import { CDPipeCard } from './components/cd-pipe-card/cd-pipe-card';
 Vue.component('cd-pipe-card', CDPipeCard);
+
+import moment from 'moment';
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        return moment(String(value)).format('YYYY/MM/DD hh:mm:ss');
+    }
+});
 
 new Vue({
     el: '#app-main',
