@@ -150,8 +150,11 @@ class AtlassianClient(CIClient):
             return 'running'
         return state
 
-    def get_deployment_url(self, deploymentKey):
-        return app_config.get_ci_uri() + "/deploy/viewDeploymentProjectEnvironments.action?id=" + deploymentKey
+    def get_deployment_url(self, deployment_key):
+        return app_config.get_ci_uri() + "/deploy/viewDeploymentProjectEnvironments.action?id=" + deployment_key
+
+    def get_deployment_result_url(self, result_id):
+        return app_config.get_ci_uri() + "/deploy/viewDeploymentResult.action?deploymentResultId=" + str(result_id)
 
     def get_build_url(self, buildKey):
         return app_config.get_ci_uri() + "/browse/" + buildKey
@@ -176,6 +179,7 @@ class AtlassianClient(CIClient):
                 environment['version'] = env_status.deploymentResult.deploymentVersion.name
                 if hasattr(env_status.deploymentResult, 'finishedDate'):
                     environment['timestamp'] = env_status.deploymentResult.finishedDate
+                environment['link'] = self.get_deployment_result_url(env_status.deploymentResult.id)
 
             self.add_to_pipes(pipes, environment)
         

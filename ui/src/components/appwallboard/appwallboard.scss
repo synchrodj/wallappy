@@ -11,6 +11,14 @@
     background-color: rgb(92, 184, 92);
 }
 
+.error {
+    color: rgb(217, 83, 79);
+}
+
+.success {
+    color: rgb(92, 184, 92);
+}
+
 .pipeline .el-card__header {
     background-color: rgb(51, 122, 183);
 }
@@ -42,10 +50,6 @@
     padding-bottom: 6px;
 }
 
-.deployment-info {
-    text-align: right;
-}
-
 .app-summary {
     margin-bottom: 10px;
 }
@@ -65,3 +69,4 @@
     color: rgb(255, 255, 255);
     font-size: 14px;
 }
+

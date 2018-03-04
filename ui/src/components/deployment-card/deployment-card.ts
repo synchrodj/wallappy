@@ -4,7 +4,6 @@ import http from '../../services/http';
 
 import './deployment-card.scss';
 
-
 @Component({
     template: require('./deployment-card.html')
 })
@@ -58,7 +57,6 @@ export class DeploymentCard extends Vue {
             }   
         }
         
-        console.log(JSON.stringify(deployments));
         return deployments;
     }
 }

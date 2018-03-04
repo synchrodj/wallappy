@@ -11,18 +11,27 @@
                 </div>
             </div>
             <el-table v-if="deploymentsPipe.envs.length > 0" :show-header="false" :data="deploymentsPipe.envs" style="width: 100%">
+                <el-table-column width="25px">
+                    <template slot-scope="scope">
+                        <div class="dep-env-icon">
+                            <icon class="success" v-if="scope.row.state === 'success'" name="check-circle"></icon>
+                            <icon class="error" v-if="scope.row.state === 'error'" name="times-circle"></icon>
+                            <icon v-if="scope.row.state === 'deploying'" name="circle-o-notch" spin></icon>
+                        </div>
+                    </template>
+                </el-table-column>
+                
                 <el-table-column>
                     <template slot-scope="scope">
-                        {{scope.row.name}}
+                        <div class="env-description">
+                            <a :href="scope.row.link" target="blank">{{scope.row.name}}</a>
+                        </div>
                     </template>
                 </el-table-column>
 
                 <el-table-column width="80px">
                     <template slot-scope="scope">
                         <div class="deployment-info">
-                            <icon v-if="scope.row.state === 'success'" name="check-circle"></icon>
-                            <icon v-if="scope.row.state === 'error'" name="times-circle"></icon>
-                            <icon v-if="scope.row.state === 'deploying'" name="circle-o-notch" spin></icon>
                             <el-tooltip v-if="scope.row.state === 'success' || scope.row.state === 'error'" class="item" effect="dark" content="Test results" placement="right">
                                 <icon name="list"></icon>
                             </el-tooltip>
@@ -37,9 +46,6 @@
                 <icon name="exclamation-triangle" scale="1"></icon>
                 <span>Env outdated</span>
             </div>
-
-            
-            
         </el-card>
     </div>
 </div>
