@@ -171,7 +171,8 @@ class AtlassianClient(CIClient):
 
         for env_status in deployment_result.environmentStatuses:
             environment = {
-                "name": env_status.environment.name
+                "name": env_status.environment.name,
+                "id": env_status.environment.id
             }
 
             if hasattr(env_status, 'deploymentResult') and add_state:
@@ -216,5 +217,6 @@ class AtlassianClient(CIClient):
                 for env_name in chain['envs']:
                     if re.search(env_name, environment['name'], re.IGNORECASE): # some flexibility in here
                         environment['type'] = chain['type'] # probably not the best place to set this information
-                        pipes.append(pipe_config['name'])
+                        if pipe_config['name'] not in pipes:
+                            pipes.append(pipe_config['name'])
         return pipes
