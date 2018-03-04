@@ -15,7 +15,10 @@
                     <template slot-scope="scope">
                         <div class="changeset-info">
                             <div class="author">
-                                <el-tooltip :content="scope.row.author" placement="right">
+                                <img v-if="scope.row.author === 'bamboo'" class="avatar" src="/assets/img/user-bamboo.png"></img>
+                                
+                                <el-tooltip v-if="scope.row.author !== 'bamboo'" :content="scope.row.author" placement="right">
+                                    <!-- TODO get profile images from server -->
                                     <img class="avatar" src="/assets/img/user-generic.png"></img>
                                 </el-tooltip>
                             </div>
