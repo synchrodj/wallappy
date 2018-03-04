@@ -16,6 +16,14 @@ export class AppWallboardComponent extends Vue {
 
     lastDeploymentInfo = null;
 
+    private loadingBuild = true;
+
+    private loadingDeployments = true;
+
+    get loading() {
+        return this.loadingBuild || this.loadingDeployments;
+    }
+
     constructor() {
         super();
         if (!this.logger) this.logger = new Logger();
@@ -23,13 +31,12 @@ export class AppWallboardComponent extends Vue {
     
     created() {
         let path = `/api/deployments?buildKey=${this.$route.params.appid}`;
-        http.get(path)
-            .then((response) => {
-                this.deploymentInfo = response.data;
-                this.refreshAppStatus();
-            }, (error) => {
-                console.error(error);
-            });
+        http.get(path).then((response) => {
+            this.deploymentInfo = response.data;
+            this.refreshAppStatus();
+        }, (error) => {
+            console.error(error);
+        });
     }
 
     get appInfo() {
@@ -47,31 +54,35 @@ export class AppWallboardComponent extends Vue {
     }
 
     private updateLastBuildInfo(): void { 
+        this.loadingBuild = true;
         let lastBuildPath = `/api/apps/${this.deploymentInfo.buildKey}/builds?limit=1`;
     
         http.get(lastBuildPath)
             .then((response) => {
                 if (this.lastBuildInfo == null 
                     || this.lastBuildInfo.version !== response.data.version) {
-                        this.logger.info('Refreshing build info');
-
-                        this.lastBuildInfo = response.data;
-                    }
+                    this.lastBuildInfo = response.data;
+                }
+                this.loadingBuild = false;
             }, (error) => {
                 this.logger.error(error);
+                this.loadingBuild = false;
             });
     }
 
     private updateLastDeploymentInfo(): void {
+        this.loadingDeployments = true;
         let url = `/api/deployments/${this.deploymentInfo.deploymentKey}`;
         http.get(url).then((response) => {
             if (this.lastDeploymentInfo == null 
                 || JSON.stringify(this.lastDeploymentInfo) !== JSON.stringify(response.data)) { // Probably not very accurate
-                    this.logger.info('Refreshing deployment info');
-                    this.lastDeploymentInfo = response.data;
-                } 
+                this.logger.info('Refreshing deployment info');
+                this.lastDeploymentInfo = response.data;
+            } 
+            this.loadingDeployments = false;
         }, (error) => {
             this.logger.error(error);
+            this.loadingDeployments = false;
         });
     }
 }

@@ -1,6 +1,11 @@
 <div class="container content">
     <el-row :gutter="10">
-        <h1><strong>{{appInfo.name}} </strong> <small>/ {{$route.params.appid}}</small></h1>
+        <h1>
+            <strong>{{appInfo.name}} </strong> 
+            <small>/ {{$route.params.appid}} </small>
+            <icon style="color: #565759;" v-if="loading" name="circle-o-notch" spin scale="0.7"></icon>
+        </h1> 
+
         <div class="app-summary">
             <div class="deployments-summary" v-for="pipe in appInfo.deploymentPipes">
                 <span class="summary-pipe-name">{{pipe.name}}</span>
