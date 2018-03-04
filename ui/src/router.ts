@@ -55,7 +55,7 @@ export const createRoutes: () => RouteConfig[] = () => [
     component: deploymentsComponent,
   },
   {
-    path: '/wallboard/pods/:pod/apps/:appid',
+    path: '/deployments/:deploymentId',
     component: appWallboardComponent,
   }
 ];

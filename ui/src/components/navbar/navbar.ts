@@ -20,8 +20,6 @@ export class NavbarComponent extends Vue {
 
     showNavbar = false;
 
-    object: { default: string } = { default: 'Default object property!' }; // objects as default values don't need to be wrapped into functions
-
     activeIndex: string = '0';
 
    links: Link[] = [
@@ -37,7 +35,6 @@ export class NavbarComponent extends Vue {
 
     mounted() {
         if (!this.logger) this.logger = new Logger();
-        this.$nextTick(() => this.logger.info(this.object.default));
     }
 
     handleSelect(index) {

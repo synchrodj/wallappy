@@ -11,28 +11,16 @@ export class DeploymentsComponent extends Vue {
     
     public filter = '';
 
-    public deployments = [];
-    
     private url = '/api/deployments';
     
-    created() {
-        http.get(this.url)
-            .then((response) => {
-                this.deployments = response.data;
-                console.log(this.deployments);
-            }, (error) => {
-                console.error(error);
-            });
-    }
-
     get filteredRows() {
         if (this.filter === '') {
-            return this.deployments;
+            return this.$store.state.deployments;
         }
 
         let fiteredRows = [];
         let filter: string = this.filter.toLowerCase().trim();
-        for (let deployment of this.deployments) {
+        for (let deployment of this.$store.state.deployments) {
             if (deployment.name.toLowerCase().indexOf(filter) !== -1
                 || deployment.deploymentKey.toLowerCase().indexOf(filter) !== -1
                 || deployment.buildKey.toLowerCase().indexOf(filter) !== -1) {

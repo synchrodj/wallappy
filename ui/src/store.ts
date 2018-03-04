@@ -8,12 +8,11 @@ const UPDATE_DEPLOYMENTS = 'UPDATE_DEPLOYMENTS';
 
 export default new Vuex.Store({
     state: {
-        deployments: {}
+        deployments: []
     },
     mutations: {
         [UPDATE_DEPLOYMENTS] (state, deployments) {
             state.deployments = deployments;
-            console.log('State update ' + UPDATE_DEPLOYMENTS + deployments); 
         }
     },
     getters: {
@@ -22,9 +21,11 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        getDeploymentsConfig ({commit}) {
-            return http.get('/api/config/deployments')
-                .then((response) => commit(UPDATE_DEPLOYMENTS, response.data));
+        getDeployments ({commit}) {
+            return http.get('/api/deployments')
+            .then((response) => {
+                commit(UPDATE_DEPLOYMENTS, response.data);
+            });
         }
     }
 });

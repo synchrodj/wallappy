@@ -31,7 +31,6 @@ export class DeploymentCard extends Vue {
     }
 
     private getCurrentVersionDeploymentsStatus(lastBuildInfo, lastDeploymentsInfo) {
-        this.logger.info('Getting deployments!');
         let deployments = [];
 
         if (lastBuildInfo && lastDeploymentsInfo) {
@@ -46,7 +45,7 @@ export class DeploymentCard extends Vue {
                 let lastDeploymentState = 'unknown';
                 for (let env of deploymentPipe.envs) {
                     // Setting pipe status to last env status
-                    if (env.version.indexOf(lastBuildInfo.version) !== -1) {
+                    if (env.version && env.version.indexOf(lastBuildInfo.version) !== -1) {
                         currentPipe.envs.push(env);
                         currentPipe.state = env.state;
                         currentPipe.version = env.version;

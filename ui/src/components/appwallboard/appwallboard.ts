@@ -20,6 +20,8 @@ export class AppWallboardComponent extends Vue {
 
     private loadingDeployments = true;
 
+    private timerToken: any;
+
     get loading() {
         return this.loadingBuild || this.loadingDeployments;
     }
@@ -27,13 +29,15 @@ export class AppWallboardComponent extends Vue {
     constructor() {
         super();
         if (!this.logger) this.logger = new Logger();
+        
     }
     
     created() {
-        let path = `/api/deployments?buildKey=${this.$route.params.appid}`;
+        let path = `/api/deployments?buildKey=${this.$route.params.deploymentId}`;
         http.get(path).then((response) => {
             this.deploymentInfo = response.data;
             this.refreshAppStatus();
+            this.timerToken = setInterval(() => this.refreshAppStatus(), 30000);   
         }, (error) => {
             console.error(error);
         });
@@ -84,5 +88,9 @@ export class AppWallboardComponent extends Vue {
             this.logger.error(error);
             this.loadingDeployments = false;
         });
+    }
+
+    destroyed() {
+        clearTimeout(this.timerToken);
     }
 }

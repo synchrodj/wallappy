@@ -47,6 +47,6 @@ new Vue({
     },
     store: store,
     created () {
-        this.$store.dispatch('getDeploymentsConfig');
+        this.$store.dispatch('getDeployments');
     }
 });

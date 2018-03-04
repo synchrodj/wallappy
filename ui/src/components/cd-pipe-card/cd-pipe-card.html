@@ -1,5 +1,5 @@
 <div>
-    <el-card v-if="deploymentPipes.length > 0" class="box-card pipeline" v-for="pipe in deploymentPipes">
+    <el-card v-if="deploymentPipes.length > 0" class="box-card pipeline" v-for="pipe in deploymentPipes" :key="pipe.name">
         <div slot="header" class="card-header">
             <div class="icon">
                 <icon scale="3" name="tasks"></icon>
@@ -34,15 +34,16 @@
                         </div -->
                         
                         <div :class="(deployments.envs.length > 1)? 'env-group' : 'env-cell'">
-                            <div class="env-pipe" v-for="(env, index) in deployments.envs">
+                            <div class="env-pipe" v-for="(env, index) in deployments.envs" :key="env.name">
                                 <div class="env-header">
                                     <div class="env-icon">
                                         <icon name="cloud" v-if="env.state === 'success'"  scale="2"></icon>
-                                        <icon v-if="env.state === 'error'" name="exclamation" class="alert" scale="2"></icon>
+                                        <icon v-if="env.state === 'error'" name="exclamation" scale="2"></icon>
                                         <icon v-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
                                     </div>
                                     <div class="env-info">{{env.name}}</div>
-                                    <div class="env-version"> {{env.version}} </div>
+                                    
+                                    <div class="env-version"> <a :href="env.link" target="blank">{{env.version}}</a> </div>
                                 </div>
                             </div>
                         </div>

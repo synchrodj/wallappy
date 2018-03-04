@@ -24,7 +24,6 @@ export class CDPipeCard extends Vue {
     }
 
     private buildDeploymentPipes(deployments) {
-        console.log('Build deployment pipes');
         let deploymentPipes = [];
 
         if (deployments) {
