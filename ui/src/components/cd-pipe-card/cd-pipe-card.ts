@@ -42,7 +42,7 @@ export class CDPipeCard extends Vue {
                     'name': deploymentPipe.name,
                     'deployments': []
                 };
-    
+
                 for (let env of deploymentPipe.envs) {
                     this.appendDeployment(currentPipe, env);
                 } 
@@ -78,7 +78,7 @@ export class CDPipeCard extends Vue {
         let currentVersion = this.currentPipes[pipeIndex].deployments[envIndex].envs[0].buildKey;
         let nextVersion = this.currentPipes[pipeIndex].deployments[envIndex + 1].envs[0].buildKey;
 
-        return currentVersion !== nextVersion;
+        return currentVersion && nextVersion && currentVersion !== nextVersion;
     }
 
     public displayEnvDiffs(pipeIndex, envIndex) {
@@ -87,22 +87,24 @@ export class CDPipeCard extends Vue {
 
         let currentVersion = this.currentPipes[pipeIndex].deployments[envIndex].envs[0].buildKey;
         let nextVersion = this.currentPipes[pipeIndex].deployments[envIndex + 1].envs[0].buildKey;
-        let config: AxiosRequestConfig = {
-            params: {
-                query: 'range',
-                from: currentVersion,
-                to: nextVersion
-            }
-        };
 
-        http.get(path, config).then((response) => {
-            if (this.displayEnvDiffsDialog) {
-                this.envDiffs = response.data;
-            }
-        }, (error) => {
-            console.error(error);
-        });
-        console.log('Display env difs [' + pipeIndex + '][' + currentVersion + ', ' + nextVersion + ']');
+        if (currentVersion && nextVersion) {
+            let config: AxiosRequestConfig = {
+                params: {
+                    query: 'range',
+                    from: currentVersion,
+                    to: nextVersion
+                }
+            };
+    
+            http.get(path, config).then((response) => {
+                if (this.displayEnvDiffsDialog) {
+                    this.envDiffs = response.data;
+                }
+            }, (error) => {
+                console.error(error);
+            });
+        }
     }
 
     public handleCloseEnvDiffs() {

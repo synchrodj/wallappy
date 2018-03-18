@@ -1,10 +1,20 @@
 <div class="container content">
     <h1>wallappy</h1>
-    <p>Choose wallboard</p>
-    <ul>
-        <li>Deployments</li>
-        <li>Pods</li>
-    </ul>
+    <p>Choose wallboard to start</p>
+
+    <div class="home-link" v-on:click="$router.push('/deployments')">
+        <span class="home-link-content">
+            <icon class="home-link-icon" name="cloud" scale="5"></icon>
+            Deployments
+        </span>
+    </div>
+    <div class="home-link" v-on:click="$router.push('/pods')">
+        <span class="home-link-content">
+            <icon class="home-link-icon" name="group" scale="5"></icon>
+            Pods
+        </span>
+    </div>
+    
     
     
 </div>

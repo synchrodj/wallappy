@@ -1,5 +1,6 @@
-<div>    
-    <div v-if="currentDeploymentsStatus.length>0" v-for="deploymentsPipe in currentDeploymentsStatus">
+<transition name="bounce">
+<div v-if="currentDeploymentsStatus.length>0" >
+    <div v-for="deploymentsPipe in currentDeploymentsStatus">
         <el-card :class="'box-card  ' + deploymentsPipe.state">
             <div slot="header" class="card-header">
                 <div class="icon">
@@ -49,3 +50,4 @@
         </el-card>
     </div>
 </div>
+</transition>

@@ -1,6 +1,6 @@
 <div class="container content" :v-loading="appInfo == null">
     <div v-if="appInfo !== null">
-    <el-row :gutter="10">
+    <el-row :gutter="10" >
         <h1>
             <strong>{{appInfo.name}} </strong> 
             <small>/ {{appInfo.buildKey}} </small>
@@ -15,15 +15,15 @@
         </div>
     </el-row>
     <el-row :gutter="10">
-        <el-col :span="8">
+        <el-col :xs="23" :sm="20" :md="13" :lg="10" :xl="8">
             <build-card :appInfo="appInfo" :buildInfo="lastBuildInfo"></build-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :xs="23" :sm="10" :md="8" :lg="5" :xl="4">
             <deployment-card :appInfo="appInfo" :lastDeploymentsInfo="lastDeploymentInfo" :lastBuildInfo="lastBuildInfo"></deployment-card>
         </el-col>
     </el-row>
     <el-row :gutter="10">
-        <el-col :span="12">
+        <el-col :xs="23" :sm="20" :md="21" :lg="15" :xl="12">
             <cd-pipe-card :appInfo="appInfo" :lastDeploymentsInfo="lastDeploymentInfo"></cd-pipe-card>
         </el-col>
     </el-row>

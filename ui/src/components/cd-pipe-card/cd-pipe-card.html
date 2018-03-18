@@ -1,4 +1,5 @@
-<div>
+<transition name="bounce">
+<div v-if="deploymentPipes.length > 0">
     <el-card v-if="deploymentPipes.length > 0" v-for="(pipe, pipeIndex) in deploymentPipes" 
             class="box-card pipeline" :key="pipe.name">
         <div slot="header" class="card-header">
@@ -39,11 +40,11 @@
                                 <div class="env-header">
                                     <div class="env-icon">
                                         <icon name="cloud" v-if="env.state === 'success'"  scale="2"></icon>
-                                        <icon v-if="env.state === 'error'" name="exclamation" scale="2"></icon>
-                                        <icon v-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
+                                        <icon v-else-if="env.state === 'error'" name="exclamation" scale="2"></icon>
+                                        <icon v-else-if="env.state === 'deploying'" name="circle-o-notch" scale="2" spin></icon>
+                                        <icon v-else name="question" scale="2"></icon>
                                     </div>
                                     <div class="env-info">{{env.name}}</div>
-                                    
                                     <div class="env-version"> <a :href="env.link" target="blank">{{env.version}}</a> </div>
                                 </div>
                             </div>
@@ -70,14 +71,17 @@
             </div>
         </div>
 
-        <el-dialog title="Environment diffs" :visible.sync="displayEnvDiffsDialog" :before-close="handleCloseEnvDiffs">
+        <transition name="bounce">
+        <el-dialog title="Environment diffs" v-if="displayEnvDiffsDialog" 
+            :visible.sync="displayEnvDiffsDialog" :before-close="handleCloseEnvDiffs"
+            :close-on-click-modal="false">
             <div class="env-diffs-container" v-loading="envDiffs.length === 0">
                 <build-card :appInfo="appInfo" :buildInfo="buildInfo" 
                     v-if="envDiffs.length>0" v-for="buildInfo in envDiffs" :key="'diff'+buildInfo.buildResultKey">
                 </build-card>
             </div>
         </el-dialog>
+        </transition>
     </el-card>
-
-   
 </div>
+</transition>

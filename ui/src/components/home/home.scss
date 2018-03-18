@@ -1,3 +1,30 @@
-.content h1 {
-    
+.home-link {
+    display: inline;
+    margin: 20px;    
+    color: #6d6d6d;
+}
+
+.home-link-content {
+    padding: 10px;
+    border: 1px solid #ebeef5;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    border-radius: 4px;
+}    
+
+.home-link-content:hover {
+    cursor: pointer;
+    background-color: #F5F7FA;
+
+    -webkit-transition: background-color .25s ease;
+    transition: background-color .50s ease;
+    transition-property: background-color;
+    transition-duration: 0.50s;
+    transition-timing-function: ease;
+    transition-delay: initial;
+}
+
+.home-link-icon {
+    color: rgb(156, 156, 156);
 }
