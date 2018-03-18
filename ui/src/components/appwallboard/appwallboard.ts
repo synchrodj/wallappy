@@ -10,7 +10,7 @@ export class AppWallboardComponent extends Vue {
 
     protected logger: Logger;
 
-    deploymentInfo = null;
+    appInfo = null;
 
     lastBuildInfo = null;
 
@@ -35,21 +35,12 @@ export class AppWallboardComponent extends Vue {
     created() {
         let path = `/api/deployments?buildKey=${this.$route.params.deploymentId}`;
         http.get(path).then((response) => {
-            this.deploymentInfo = response.data;
+            this.appInfo = response.data;
             this.refreshAppStatus();
-            this.timerToken = setInterval(() => this.refreshAppStatus(), 30000);   
+            this.timerToken = setInterval(() => this.refreshAppStatus(), 60000);   
         }, (error) => {
             console.error(error);
         });
-    }
-
-    get appInfo() {
-        let appInfo = {};
-        
-        if (this.deploymentInfo !== null) {
-            appInfo = JSON.parse(JSON.stringify(this.deploymentInfo));            
-        }
-        return appInfo;
     }
 
     private refreshAppStatus(): void {
@@ -59,7 +50,7 @@ export class AppWallboardComponent extends Vue {
 
     private updateLastBuildInfo(): void { 
         this.loadingBuild = true;
-        let lastBuildPath = `/api/apps/${this.deploymentInfo.buildKey}/builds?limit=1`;
+        let lastBuildPath = `/api/apps/${this.appInfo.buildKey}/builds?query=latest`;
     
         http.get(lastBuildPath)
             .then((response) => {
@@ -76,7 +67,7 @@ export class AppWallboardComponent extends Vue {
 
     private updateLastDeploymentInfo(): void {
         this.loadingDeployments = true;
-        let url = `/api/deployments/${this.deploymentInfo.deploymentKey}`;
+        let url = `/api/deployments/${this.appInfo.deploymentKey}`;
         http.get(url).then((response) => {
             if (this.lastDeploymentInfo == null 
                 || JSON.stringify(this.lastDeploymentInfo) !== JSON.stringify(response.data)) { // Probably not very accurate

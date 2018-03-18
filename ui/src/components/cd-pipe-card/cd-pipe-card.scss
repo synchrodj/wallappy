@@ -129,3 +129,23 @@
     transition-timing-function: ease;
     transition-delay: initial;
 }
+
+.env-diffs-button:hover {
+    cursor: pointer;
+    color: #d1d1d1;
+    -webkit-transition: color .50s ease;
+    transition: color .50s ease;
+    transition-property: color;
+    transition-duration: 0.50s;
+    transition-timing-function: ease;
+    transition-delay: initial;
+}
+
+.env-diffs-container {
+    min-height: 200px;
+    max-height: 500px;
+    padding-left: 15px;
+    padding-right: 15px;
+    overflow: auto;
+}
+

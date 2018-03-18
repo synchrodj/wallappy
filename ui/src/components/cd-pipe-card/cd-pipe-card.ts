@@ -2,6 +2,9 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import './cd-pipe-card.scss';
 import { Logger } from '../../util/log';
+import http from '../../services/http';
+import { AxiosRequestConfig } from 'axios';
+
 
 @Component({
     template: require('./cd-pipe-card.html')
@@ -15,12 +18,19 @@ export class CDPipeCard extends Vue {
     @Prop()
     lastDeploymentsInfo: Array<any>;
 
+    private currentPipes = [];
+
+    public displayEnvDiffsDialog: boolean = false;
+
+    private envDiffs = [];
+
     mounted() {
         if (!this.logger) this.logger = new Logger();
     }
 
     get deploymentPipes() {
-        return this.buildDeploymentPipes(this.lastDeploymentsInfo);
+        this.currentPipes = this.buildDeploymentPipes(this.lastDeploymentsInfo);
+        return this.currentPipes;
     }
 
     private buildDeploymentPipes(deployments) {
@@ -62,6 +72,42 @@ export class CDPipeCard extends Vue {
         }
 
         deploymentGroup.envs.push(envDeployment);
+    }
+
+    public envOutdated(pipeIndex, envIndex): boolean {
+        let currentVersion = this.currentPipes[pipeIndex].deployments[envIndex].envs[0].buildKey;
+        let nextVersion = this.currentPipes[pipeIndex].deployments[envIndex + 1].envs[0].buildKey;
+
+        return currentVersion !== nextVersion;
+    }
+
+    public displayEnvDiffs(pipeIndex, envIndex) {
+        this.displayEnvDiffsDialog = true;
+        let path = `/api/apps/${this.$route.params.deploymentId}/builds`;
+
+        let currentVersion = this.currentPipes[pipeIndex].deployments[envIndex].envs[0].buildKey;
+        let nextVersion = this.currentPipes[pipeIndex].deployments[envIndex + 1].envs[0].buildKey;
+        let config: AxiosRequestConfig = {
+            params: {
+                query: 'range',
+                from: currentVersion,
+                to: nextVersion
+            }
+        };
+
+        http.get(path, config).then((response) => {
+            if (this.displayEnvDiffsDialog) {
+                this.envDiffs = response.data;
+            }
+        }, (error) => {
+            console.error(error);
+        });
+        console.log('Display env difs [' + pipeIndex + '][' + currentVersion + ', ' + nextVersion + ']');
+    }
+
+    public handleCloseEnvDiffs() {
+        this.displayEnvDiffsDialog = false;
+        this.envDiffs = [];
     }
 
     getCDPipes() {

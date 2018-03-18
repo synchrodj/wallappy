@@ -16,6 +16,9 @@ class CiService(object):
     def get_latest_build(self, app_id):
         return self._ci_client.get_latest_build(app_id)
 
+    def get_builds_range(self, app_id, from_build_key, to_build_key):
+        return self._ci_client.get_builds_range(app_id, from_build_key, to_build_key)
+
     def get_deployments(self):
         if self.cached_deployments == None:
             self.cached_deployments = self._ci_client.get_deployments()

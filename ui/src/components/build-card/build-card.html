@@ -1,16 +1,16 @@
 <div>
-        <el-card v-if="lastBuildInfo" :class="'box-card  ' + lastBuildInfo.state">
+        <el-card v-if="buildInfo" :class="'box-card  ' + buildInfo.state">
             <div slot="header" class="card-header">
                 <div class="icon">
                     <icon scale="3" name="cog"></icon>
                 </div>
                 <div class="header-content">
-                    <div class="description">{{appInfo.name}} lastest build</div>
-                    <div class="value">{{ lastBuildInfo.version }}</div>
+                    <div class="description">{{appInfo.name}} build</div>
+                    <div class="value">{{ buildInfo.version }}</div>
                 </div>
             </div>
 
-            <el-table :show-header="false" :v-if="lastBuildInfo.changeset" :data="lastBuildInfo.changeset.changes" style="width: 100%">
+            <el-table :show-header="false" :v-if="buildInfo.changeset" :data="buildInfo.changeset.changes" style="width: 100%">
                 <el-table-column width="100px">
                     <template slot-scope="scope">
                         <div class="changeset-info">

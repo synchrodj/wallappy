@@ -42,15 +42,21 @@ class AtlassianClient(CIClient):
 
     def get_latest_build(self, app_id): 
         latest_build_key =  self.get_latest_build_key(app_id)
-        latest_build_details = self.get_build_details(latest_build_key)
+        return self.get_build(latest_build_key)
+
+    def get_build(self, build_key):
+        build_details = self.get_build_details(build_key)
 
         return {
-            'version': latest_build_details.buildNumber,
-            'state': self.get_state(latest_build_details.buildState),
-            'changeset': self.build_changesets_info(latest_build_details),
-            'issues': self.build_issues_info(latest_build_details),
-            'sourceInfo': self.marshallObject(latest_build_details)
+            'version': build_details.buildNumber,
+            'buildNumber': build_details.buildNumber,
+            'buildResultKey': build_details.buildResultKey,
+            'state': self.get_state(build_details.buildState),
+            'changeset': self.build_changesets_info(build_details),
+            'issues': self.build_issues_info(build_details),
+            'sourceInfo': self.marshallObject(build_details)
         }
+
 
     def get_build_details(self, build_key):
         path = 'latest/result/{}'.format(build_key)
@@ -64,10 +70,10 @@ class AtlassianClient(CIClient):
         latest_build_info = self.bambooClient.get(path, params=params)
         return latest_build_info.results.result[0].key
 
-    def build_changesets_info(self, latest_build_details): 
+    def build_changesets_info(self, build_details): 
         return {
-            'repository': self.get_repository(latest_build_details),
-            'changes': self.build_changes(latest_build_details)
+            'repository': self.get_repository(build_details),
+            'changes': self.build_changes(build_details)
         }
 
     def build_changes(self, build_details): 
@@ -105,6 +111,20 @@ class AtlassianClient(CIClient):
             source_build = build_details.buildResultKey
             c = {
                 'description': "Scheduled from <strong>" + build_details.planName + "</strong>",
+                'author': "bamboo",
+                'type': 'build',
+                'plan': {
+                    'name': build_details.planName,
+                    'link': self.get_build_url(build_details.key)
+                },
+                'date': build_details.buildCompletedDate
+            }
+            changes.append(c)
+        
+        elif re.search('manual run', reason, re.IGNORECASE):
+            source_build = build_details.buildResultKey
+            c = {
+                'description': reason,
                 'author': "bamboo",
                 'type': 'build',
                 'plan': {
@@ -161,7 +181,7 @@ class AtlassianClient(CIClient):
 
     def get_deployment(self, deployment_id): 
         path = 'latest/deploy/dashboard/{}'.format(deployment_id)
-        deployment_status = self.bambooClient.get(path);
+        deployment_status = self.bambooClient.get(path)
         deployment_info = self.build_deployment_pipes(deployment_status[0], add_state=True)
 
         return deployment_info
@@ -178,13 +198,32 @@ class AtlassianClient(CIClient):
             if hasattr(env_status, 'deploymentResult') and add_state:
                 environment['state'] = self.get_state(env_status.deploymentResult.deploymentState)
                 environment['version'] = env_status.deploymentResult.deploymentVersion.name
+                environment['versionId'] = env_status.deploymentResult.deploymentVersion.id
+                environment['buildKey'] = self.get_build_key(deployment_result.deploymentProject.planKey.key, env_status)
                 if hasattr(env_status.deploymentResult, 'finishedDate'):
                     environment['timestamp'] = env_status.deploymentResult.finishedDate
                 environment['link'] = self.get_deployment_result_url(env_status.deploymentResult.id)
 
             self.add_to_pipes(pipes, environment)
+            
+            #env_status.deploymentResult.deploymentVersion.id --> relese id related to a build
+
         
         return pipes
+    
+    # This is very inconvenient but due to the need of a new call to the private api 
+    # it has been decided to proceed to evaluate 
+    def get_build_key(self, plan_key, env_status):
+        version_name = env_status.deploymentResult.deploymentVersion.name
+        build_id = version_name
+        if "-" in build_id:
+            build_id = build_id[:build_id.find("-")]
+        
+        if "." in build_id:
+            build_id = build_id[build_id.find(".")+1:]
+        
+        return plan_key + "-" + build_id
+        
 
     def add_to_pipes(self, pipes, environment):
         candidates_pipes = self.eval_pipes(environment)
@@ -200,7 +239,7 @@ class AtlassianClient(CIClient):
             if pipe['name'] == pipe_name:
                 current_pipe = pipe
                 break
-        
+
         if current_pipe == None:
             current_pipe = {
                 "name": pipe_name,
@@ -209,7 +248,7 @@ class AtlassianClient(CIClient):
             pipes.append(current_pipe)
         
         return current_pipe
-    
+
     def eval_pipes(self, environment):
         pipes = []
         for pipe_config in app_config.get_deployments_config()['pipes']:
@@ -220,3 +259,19 @@ class AtlassianClient(CIClient):
                         if pipe_config['name'] not in pipes:
                             pipes.append(pipe_config['name'])
         return pipes
+
+    # Important note: it will check builds in desdencing order by using the build number
+    def get_builds_range(self, app_id, from_build_key, to_build_key):
+        max_builds = 15
+        builds = []
+
+        current_build_key = from_build_key
+        for current_index in range(max_builds):
+            current_build_details = self.get_build(current_build_key)
+            if current_build_details['buildResultKey'] == to_build_key:
+                break 
+
+            builds.append(current_build_details)
+            current_build_key = app_id + "-" + str(current_build_details['buildNumber'] - 1)
+
+        return builds

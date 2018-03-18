@@ -11,7 +11,7 @@ export class BuildCard extends Vue {
     protected logger: Logger;
     
     @Prop()
-    lastBuildInfo;
+    buildInfo;
 
     @Prop()
     appInfo: any;

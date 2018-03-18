@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 class Http {
     private host: string;
@@ -12,8 +12,8 @@ class Http {
         }
     }   
 
-    get(path) {
-        return axios.get(this.host + path);
+    get(path, config?: AxiosRequestConfig) {
+        return axios.get(this.host + path, config);
     }
 }
 
